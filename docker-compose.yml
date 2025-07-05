@@ -1,0 +1,28 @@
+services:
+  vault-mcp:
+    build: .
+    container_name: vault-mcp
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - REPO_OWNER=${REPO_OWNER}
+      - REPO_NAME=${REPO_NAME}
+      - VAULT_PATH=${VAULT_PATH:-}
+    restart: unless-stopped
+
+    # Health check
+    healthcheck:
+      test: ["CMD", "node", "-e", "console.log('Health check')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: "0.5"
+        reservations:
+          memory: 128M
+          cpus: "0.25"
